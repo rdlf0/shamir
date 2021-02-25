@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/rand"
 	"fmt"
-	"io"
 	"math/big"
 )
 
@@ -12,12 +11,10 @@ type share struct {
 	y big.Int
 }
 
-var r io.Reader = rand.Reader
-
 func main() {
 	secret := big.NewInt(1234567890)
 
-	prime, err := rand.Prime(r, secret.BitLen()+1)
+	prime, err := rand.Prime(rand.Reader, secret.BitLen()+1)
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +41,7 @@ func split(secret *big.Int, needed, available int, prime *big.Int) *[]share {
 	coef := make([]big.Int, needed)
 	coef[0] = *secret
 	for i := 1; i < needed; i++ {
-		c, _ := rand.Int(r, prime)
+		c, _ := rand.Int(rand.Reader, prime)
 		coef[i] = *c
 	}
 
